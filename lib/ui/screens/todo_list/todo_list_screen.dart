@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sakib/entities/todo.dart';
 import 'package:sakib/ui/screens/add_new_todo_screen.dart';
-import 'package:sakib/ui/widgets/todo_item.dart';
+import 'package:sakib/ui/screens/todo_list/all_todo_list_tab.dart';
+import 'package:sakib/ui/screens/todo_list/done_todo_list_tab.dart';
+import 'package:sakib/ui/screens/todo_list/undone_todo_list_tab.dart';
 
 class TodoListScreen extends StatefulWidget {
   const TodoListScreen({super.key});
@@ -11,30 +13,55 @@ class TodoListScreen extends StatefulWidget {
 }
 
 class _TodoListScreenState extends State<TodoListScreen> {
-
   List<Todo> _todoList = [];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Todo List"),
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Todo List"),
+          bottom: _buildTabBar(),
+        ),
+        body: const TabBarView(
+          children: [
+            AllTodoListTab(),
+            UndoneTodoListTab(),
+            DoneTodoListTab(),
+          ],
+        ),
+        floatingActionButton: _buildAddTodoFAV(context),
       ),
-      body: ListView.builder(
-        itemCount: 5,
-        itemBuilder: (context, index) {
-          return TodoItem(todo: Todo('Title will be here', 'description', DateTime.now()),
-            onIconButtonPressed: () {},);
-        },
-      ),
-      floatingActionButton: FloatingActionButton.extended(
+    );
+  }
+
+  FloatingActionButton _buildAddTodoFAV(BuildContext context) {
+    return FloatingActionButton.extended(
         tooltip: 'Add New Todo',
-        onPressed: (){
-          Navigator.push(context, MaterialPageRoute(builder: (builder)=>AddNewTodoScreen()));
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (builder) => const AddNewTodoScreen()));
         },
-        label: Text('Add'),
-        icon: Icon(Icons.add)
-      ),
+        label: const Text('Add'),
+        icon: const Icon(Icons.add));
+  }
+
+  TabBar _buildTabBar() {
+    return const TabBar(
+      tabs: [
+        Tab(
+          text: 'All',
+        ),
+        Tab(
+          text: 'Undone',
+        ),
+        Tab(
+          text: 'Done',
+        )
+      ],
     );
   }
 }
