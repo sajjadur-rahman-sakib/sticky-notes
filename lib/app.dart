@@ -8,19 +8,16 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: TodoListScreen(),
+      home: const TodoListScreen(),
       theme: _lightTheme(),
     );
   }
 
   ThemeData _lightTheme() {
     return ThemeData(
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          fixedSize: Size.fromWidth(double.maxFinite),
-          padding: EdgeInsets.symmetric(vertical: 12)
-        )
-      )
-    );
+        elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+                fixedSize: const Size.fromWidth(double.maxFinite),
+                padding: const EdgeInsets.symmetric(vertical: 12))));
   }
 }

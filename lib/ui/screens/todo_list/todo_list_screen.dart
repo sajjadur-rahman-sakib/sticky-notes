@@ -12,8 +12,10 @@ class TodoListScreen extends StatefulWidget {
   State<TodoListScreen> createState() => _TodoListScreenState();
 }
 
-class _TodoListScreenState extends State<TodoListScreen> {
-  List<Todo> _todoList = [];
+class _TodoListScreenState extends State<TodoListScreen>
+    with SingleTickerProviderStateMixin {
+  // late TabController _tabController = TabController(length: 3, vsync: this);
+  final List<Todo> _todoList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -21,32 +23,49 @@ class _TodoListScreenState extends State<TodoListScreen> {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("Todo List"),
+          title: const Text('Todo List'),
+          centerTitle: true,
           bottom: _buildTabBar(),
         ),
-        body: const TabBarView(
+        body: TabBarView(
           children: [
-            AllTodoListTab(),
-            UndoneTodoListTab(),
-            DoneTodoListTab(),
+            AllTodoListTab(
+              onDelete: _deleteTodo,
+              onStatusChange: _toggleTodoStatus,
+              todoList: _todoList,
+            ),
+            UndoneTodoListTab(
+              onDelete: _deleteTodo,
+              onStatusChange: _toggleTodoStatus,
+              todoList:
+                  _todoList.where((item) => item.isDone == false).toList(),
+            ),
+            DoneTodoListTab(
+              onDelete: _deleteTodo,
+              onStatusChange: _toggleTodoStatus,
+              todoList: _todoList.where((item) => item.isDone == true).toList(),
+            ),
           ],
         ),
-        floatingActionButton: _buildAddTodoFAV(context),
+        floatingActionButton: _buildAddTodoFAB(),
       ),
     );
   }
 
-  FloatingActionButton _buildAddTodoFAV(BuildContext context) {
+  FloatingActionButton _buildAddTodoFAB() {
     return FloatingActionButton.extended(
-        tooltip: 'Add New Todo',
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (builder) => const AddNewTodoScreen()));
-        },
-        label: const Text('Add'),
-        icon: const Icon(Icons.add));
+      tooltip: 'Add new todo',
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => AddNewTodoScreen(onAddTodo: _addNewTodo),
+          ),
+        );
+      },
+      label: const Text('Add'),
+      icon: const Icon(Icons.add),
+    );
   }
 
   TabBar _buildTabBar() {
@@ -60,8 +79,29 @@ class _TodoListScreenState extends State<TodoListScreen> {
         ),
         Tab(
           text: 'Done',
-        )
+        ),
       ],
     );
+  }
+
+  void _addNewTodo(Todo todo) {
+    _todoList.add(todo);
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  void _deleteTodo(int index) {
+    _todoList.removeAt(index);
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  void _toggleTodoStatus(int index) {
+    _todoList[index].isDone = !_todoList[index].isDone;
+    if (mounted) {
+      setState(() {});
+    }
   }
 }

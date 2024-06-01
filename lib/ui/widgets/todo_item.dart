@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:sakib/entities/todo.dart';
 
 class TodoItem extends StatelessWidget {
   const TodoItem({
-    super.key, required this.todo, required this.onIconButtonPressed,
+    super.key,
+    required this.todo,
+    required this.onIconButtonPressed,
   });
 
   final Todo todo;
@@ -21,18 +24,17 @@ class TodoItem extends StatelessWidget {
             todo.title,
             style: TextStyle(
                 decoration: _getTextDecoration(todo.isDone),
-              fontSize: 16,
-              fontWeight: FontWeight.w600
-            ),
+                fontSize: 16,
+                fontWeight: FontWeight.w600),
           ),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(todo.description),
-              Text(todo.time.toString())],
+              Text(DateFormat.yMEd().add_jms().format(todo.time)),
+            ],
           ),
-          trailing: _buildRoundedIconButton(todo.isDone)
-      ),
+          trailing: _buildRoundedIconButton(todo.isDone)),
     );
   }
 
@@ -40,7 +42,7 @@ class TodoItem extends StatelessWidget {
     return GestureDetector(
       onTap: onIconButtonPressed,
       child: CircleAvatar(
-        child: Icon(_getIcon(true)),
+        child: Icon(_getIcon(!todo.isDone)),
       ),
     );
   }
@@ -50,13 +52,14 @@ class TodoItem extends StatelessWidget {
   }
 
   TextDecoration? _getTextDecoration(bool isDone) {
-    return isDone? TextDecoration.lineThrough : null;
+    return isDone ? TextDecoration.lineThrough : null;
   }
 
   Color? _getCardTintColor(bool isDone) {
-    return isDone? Colors.green : null;
+    return isDone ? Colors.green : null;
   }
+
   Color? _getCardBGColor(bool isDone) {
-    return isDone? Colors.green.shade100 : null;
+    return isDone ? Colors.green.shade100 : null;
   }
 }
